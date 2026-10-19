@@ -84,7 +84,7 @@ var LAYOUTS=[["klasik","Klasik",460],["ringkas","Strip lebar",760],["tengah","Te
 var VIP_MAX=5;
 function vipSorted(d){return (Array.isArray(d.vip)?d.vip:[]).map(function(e,i){return{e:e,i:i}}).filter(function(x){return x.e&&x.e.m>0}).sort(function(a,b){return b.e.m-a.e.m||a.i-b.i})}
 function vipHtml(d){
-  if(d.showVip===false)return"";
+  if(d.showVip===false||d.layout!=="ringkas")return"";
   var all=vipSorted(d);if(!all.length)return"";
   var l=all.slice(0,VIP_MAX),more=all.length>VIP_MAX?"+"+(all.length-VIP_MAX)+" lagi":"";
   return '<div class="vip"><div class="vh"><span>★ ANTRIAN MABAR VIP</span><span>'+more+'</span></div>'+
@@ -179,9 +179,9 @@ function dash(){
   '<p class="hint">Win menambah 1 bintang, Lose mengurangi 1 bintang. Rank berpindah otomatis.</p></div>'+
   '<div class="p"><h2>Mabar VIP (donasi)</h2><div class="g3"><label>Nama<input id="vn" type="text" maxlength="30" placeholder="Nama donatur"></label><label>ID Mobile Legends<input id="vu" type="text" inputmode="numeric" maxlength="24" placeholder="12345678 (1234)"></label><label>Match<input id="vm" type="number" min="1" max="999" step="1" value="1"></label></div>'+
   '<div class="row"><button id="vadd">Tambah ke antrian VIP</button></div>'+
-  '<p class="hint">Antrian diurutkan otomatis: jumlah match terbanyak ada di paling atas. Overlay hanya menampilkan 5 teratas. Kalau ID Mobile Legends yang sama ditambahkan lagi, match-nya dijumlahkan. Tekan −1 setiap selesai 1 match, entri otomatis hilang saat match habis.</p>'+
+  '<p class="hint">Antrian diurutkan otomatis: jumlah match terbanyak ada di paling atas. Antrian VIP hanya tampil di tata letak Strip lebar, maksimal 5 teratas. Kalau ID Mobile Legends yang sama ditambahkan lagi, match-nya dijumlahkan. Tekan −1 setiap selesai 1 match, entri otomatis hilang saat match habis.</p>'+
   '<div id="vl"></div>'+
-  '<label class="c" style="margin-top:10px"><input type="checkbox" data-f="showVip"> Tampilkan antrian VIP di overlay</label></div>'+
+  '<label class="c" style="margin-top:10px"><input type="checkbox" data-f="showVip"> Tampilkan antrian VIP di overlay (hanya di tata letak Strip lebar)</label></div>'+
   '<div class="p"><h2>Koreksi manual</h2><div class="g">'+num("stars","Bintang sekarang")+'<span></span>'+num("wins","Jumlah Win")+num("losses","Jumlah Lose")+'</div>'+
   '<p class="hint">Bintang dihitung dari Mythic 0 sampai Immortal 100. Contoh: Honor dengan 10 bintang, isi 35. Mengubah jumlah Win/Lose tidak mengubah bintang.</p>'+
   '<div class="row"><button class="bd" id="rs">Mulai ulang dari 0</button></div></div>'+

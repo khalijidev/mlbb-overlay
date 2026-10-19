@@ -14,6 +14,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;background:transparent;color:var(--text)}
   body.green{background:#00ff00}
+  body.dark{background:#0f0d22;padding:8px}
   body.control{background:#0f0d22;padding:16px}
 
   /* ===== OVERLAY ===== */
@@ -64,7 +65,11 @@
   var params = new URLSearchParams(location.search);
   var view = params.get("view") === "control" ? "control" : "overlay";
   if (params.get("bg") === "green") document.body.classList.add("green");
+  if (params.get("bg") === "dark") document.body.classList.add("dark");
   if (view === "control") document.body.classList.add("control");
+
+  var room = (params.get("room") || "").replace(/[^A-Za-z0-9_-]/g, "");
+  var RELAY = room ? "https://ntfy.sh/mlbb-road-" + room : null;
 
   var defaults = { title:"ROAD TO IMMORTAL", wins:0, losses:0, start:0, winStar:1, loseStar:1, bonus:0 };
   var state = load();
@@ -79,7 +84,33 @@
   function save(){
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
     try { if(ch) ch.postMessage("update"); } catch(e){}
+    publish();
     render();
+  }
+  function publish(){
+    if (!RELAY || view !== "control") return;
+    try { fetch(RELAY, { method: "POST", body: JSON.stringify(state) }).catch(function(){}); } catch(e){}
+  }
+  function adopt(obj){
+    var next = Object.assign({}, defaults, obj);
+    if (JSON.stringify(next) !== JSON.stringify(state)) { state = next; render(); }
+  }
+  function startSync(){
+    if (!RELAY) return;
+    if (view === "overlay"){
+      try {
+        var es = new EventSource(RELAY + "/sse?since=latest");
+        es.onmessage = function(e){
+          try { var d = JSON.parse(e.data); if (d.event === "message") adopt(JSON.parse(d.message)); } catch(err){}
+        };
+      } catch(e){}
+    } else {
+      fetch(RELAY + "/json?poll=1&since=latest").then(function(r){ return r.text(); }).then(function(t){
+        var last = null;
+        t.trim().split("\n").forEach(function(l){ try { var d = JSON.parse(l); if (d.event === "message") last = d.message; } catch(e){} });
+        if (last) { try { adopt(JSON.parse(last)); } catch(e){} } else { publish(); }
+      }).catch(function(){});
+    }
   }
 
   // 4 tingkat: Mythic 25, Honor 25, Glory 50, Immortal (100 bintang total)
@@ -137,7 +168,7 @@
         field("winStar","★ per Win") + field("loseStar","★ per Lose") +
       '</div><label class="row">Judul overlay<input type="text" id="f-title" value="' + esc(state.title) + '"></label>' +
       '<div class="row"><button class="bd" data-a="reset">Reset semua</button></div></div>' +
-      '<div class="panel"><h2>Pratinjau</h2>' + overlayHTML() + '</div></div>';
+      '<div class="panel"><h2>Pratinjau</h2>' + (RELAY ? '<p class="hint">Sinkron online aktif (room: ' + esc(room) + ').</p>' : '<p class="hint">Sinkron mati. Tambahkan &amp;room=KODE-KAMU di link panel dan ?room=KODE-KAMU di link overlay.</p>') + overlayHTML() + '</div></div>';
   }
   function field(k, label){
     return '<label>' + label + '<input type="number" step="1" id="f-' + k + '" value="' + state[k] + '"></label>';
@@ -181,6 +212,7 @@
     });
   }
   render();
+  startSync();
 })();
 </script>
 </body>

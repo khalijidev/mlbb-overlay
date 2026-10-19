@@ -1,219 +1,138 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Road to Immortal – Overlay MLBB</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@600;800&family=Poppins:wght@600;800&family=Rajdhani:wght@600;700&display=swap">
 <style>
-  :root{
-    --ink:#14122b; --panel:#1d1a3d; --line:#3a3570; --text:#f3f0ff; --muted:#a49fd0;
-    --mythic:#c04bff; --honor:#ff6a5c; --glory:#ffb938; --immortal:#4fe0ff;
-    --win:#4ade80; --lose:#ff5d73;
-    font-family:"Bahnschift","Segoe UI","Trebuchet MS",system-ui,sans-serif;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:transparent;color:var(--text)}
-  body.green{background:#00ff00}
-  body.dark{background:#0f0d22;padding:8px}
-  body.control{background:#0f0d22;padding:16px}
-
-  /* ===== OVERLAY ===== */
-  .card{width:460px;max-width:100%;background:linear-gradient(160deg,#211d4a,#14122b);border:2px solid var(--line);border-radius:14px;padding:16px 18px 14px;position:relative;overflow:hidden}
-  .card::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--tier,var(--mythic))}
-  .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-  .title{font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--muted)}
-  .remain{font-size:14px;color:var(--muted)}
-  .rank{display:flex;align-items:baseline;gap:12px;margin:6px 0 12px}
-  .rank .name{font-size:40px;font-weight:800;line-height:1;color:var(--tier,var(--mythic))}
-  .rank .stars{font-size:24px;font-weight:700}
-  .track{position:relative;display:flex;gap:3px;height:16px}
-  .seg{height:100%;background:#2b2760;border-radius:3px;position:relative;overflow:hidden}
-  .seg i{position:absolute;inset:0 auto 0 0;width:0;background:var(--c);transition:width .5s ease}
-  .labels{display:flex;gap:3px;margin-top:5px;font-size:12px;color:var(--muted)}
-  .labels span{text-align:left}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-  .stat{background:#0f0d22;border-radius:10px;padding:8px 10px;text-align:center}
-  .stat b{display:block;font-size:30px;line-height:1.1}
-  .stat span{font-size:13px;color:var(--muted)}
-  .stat.w b{color:var(--win)} .stat.l b{color:var(--lose)} .stat.r b{color:var(--tier,var(--text))}
-
-  /* ===== PANEL ===== */
-  .wrap{display:flex;flex-direction:column;gap:16px;max-width:520px}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
-  .panel h2{margin:0 0 10px;font-size:15px;color:var(--muted);font-weight:600}
-  .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px;cursor:pointer;color:#10101c;transition:transform .08s}
-  button:active{transform:scale(.97)}
-  button:focus-visible,input:focus-visible{outline:3px solid var(--immortal);outline-offset:2px}
-  .bw{background:var(--win)} .bl{background:var(--lose)}
-  .bs{background:#2b2760;color:var(--text)}
-  .bd{background:transparent;color:var(--lose);border:1px solid var(--lose)}
-  .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
-  input[type=number],input[type=text]{font:inherit;color:var(--text);background:#0f0d22;border:1px solid var(--line);border-radius:8px;padding:8px}
-  .hint{font-size:13px;color:var(--muted);line-height:1.5;margin:8px 0 0}
-  .row{margin-top:10px}
-  @media (prefers-reduced-motion:reduce){.seg i{transition:none}}
-</style>
-</head>
-<body>
-<div id="app"></div>
-
+:root{--ink:#0f0d22;--panel:#1d1a3d;--line:#3a3570;--text:#f3f0ff;--muted:#a49fd0;--win:#4ade80;--lose:#ff5d73;--ok:#4fe0ff;font-family:"Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:transparent;color:var(--text)}
+body.dash{background:var(--ink);padding:16px}
+.card{width:460px;max-width:100%;background:var(--bg);color:var(--ct);border:2px solid var(--bd);border-radius:var(--r);padding:16px 18px 14px;position:relative;overflow:hidden;font-family:var(--font)}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--tier)}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px;color:var(--mu)}.title{font-weight:700;font-size:15px;letter-spacing:.04em}
+.rank{display:flex;align-items:baseline;gap:12px;margin:6px 0 12px}.rank .name{font-size:40px;font-weight:800;line-height:1;color:var(--tier)}.rank .stars{font-size:24px;font-weight:700}
+.track{display:flex;gap:3px;height:16px}.seg{height:100%;background:var(--seg);border-radius:3px;overflow:hidden;position:relative}.seg i{position:absolute;inset:0 auto 0 0;background:var(--c);transition:width .5s}
+.labels{display:flex;gap:3px;margin-top:5px;font-size:12px;color:var(--mu)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:var(--pn);border-radius:10px;padding:8px 10px;text-align:center}.stat b{display:block;font-size:30px;line-height:1.1}.stat span{font-size:13px;color:var(--mu)}
+.stat.w b{color:var(--win)}.stat.l b{color:var(--lose)}.stat.r b{color:var(--tier)}
+.wrap{display:flex;flex-direction:column;gap:14px;max-width:560px;margin:0 auto}
+.p{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}.p h2{margin:0 0 10px;font-size:15px;color:var(--muted)}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.b3{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px;cursor:pointer;color:#10101c;background:var(--ok)}button:active{transform:scale(.97)}
+.bw{background:var(--win)}.bl{background:var(--lose)}.bs{background:#2b2760;color:var(--text)}.bd{background:transparent;color:var(--lose);border:1px solid var(--lose)}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}label.c{flex-direction:row;align-items:center;gap:8px}
+input,select{font:inherit;color:var(--text);background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px}input[type=color]{padding:2px;height:38px;width:100%}input[type=checkbox]{width:auto}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+.hint{font-size:13px;color:var(--muted);line-height:1.5;margin:8px 0 0}.err{color:var(--lose)}.row{display:flex;gap:8px;margin-top:10px}.row>*{flex:1}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}.top small{color:var(--muted)}.top button{padding:8px 12px;flex:none}
+.url{width:100%;font-size:12px}
+</style></head><body><div id="app"></div>
 <script>
 (function(){
-  var KEY = "mlbb-road-state-v1";
-  var params = new URLSearchParams(location.search);
-  var view = params.get("view") === "control" ? "control" : "overlay";
-  if (params.get("bg") === "green") document.body.classList.add("green");
-  if (params.get("bg") === "dark") document.body.classList.add("dark");
-  if (view === "control") document.body.classList.add("control");
+var SB="https://etduxjlisobtzdomdjkx.supabase.co",ANON="sb_publishable_W6kFNgyJcy5gt3iZ9POwEA_MU7dvz-P";
+var params=new URLSearchParams(location.search),K=(params.get("k")||"").replace(/[^A-Za-z0-9_-]/g,"");
+var $=document.getElementById("app");
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]})}
+function api(path,o,tok){o=o||{};o.headers=Object.assign({apikey:ANON,"Content-Type":"application/json"},o.headers||{});if(tok)o.headers.Authorization="Bearer "+tok;return fetch(SB+path,o)}
 
-  var room = (params.get("room") || "").replace(/[^A-Za-z0-9_-]/g, "");
-  var RELAY = room ? "https://ntfy.sh/mlbb-road-" + room : null;
+var D={title:"ROAD TO IMMORTAL",wins:0,losses:0,start:0,winStar:1,loseStar:1,bonus:0,tpl:"gelap",font:"'Segoe UI',system-ui,sans-serif",cBg:"",cText:"",autoAccent:true,cAccent:"#c04bff"};
+var TPL={gelap:{bg:"linear-gradient(160deg,#211d4a,#14122b)",ct:"#f3f0ff",mu:"#a49fd0",pn:"#0f0d22",bd:"#3a3570",seg:"#2b2760",r:"14px"},
+terang:{bg:"#ffffff",ct:"#1b1b2f",mu:"#6a6a86",pn:"#eef0f7",bd:"#c9cde0",seg:"#dfe2ef",r:"14px"},
+kaca:{bg:"rgba(15,13,34,.55)",ct:"#ffffff",mu:"#d0cdf0",pn:"rgba(0,0,0,.35)",bd:"rgba(255,255,255,.25)",seg:"rgba(255,255,255,.18)",r:"18px"},
+polos:{bg:"transparent",ct:"#ffffff",mu:"#d0cdf0",pn:"rgba(0,0,0,.45)",bd:"transparent",seg:"rgba(255,255,255,.2)",r:"0"}};
+var FONTS=[["Standar","'Segoe UI',system-ui,sans-serif"],["Poppins","Poppins,'Segoe UI',sans-serif"],["Orbitron","Orbitron,'Segoe UI',sans-serif"],["Bebas Neue","'Bebas Neue',Impact,sans-serif"],["Rajdhani","Rajdhani,'Segoe UI',sans-serif"],["Impact","Impact,sans-serif"],["Georgia","Georgia,serif"],["Courier","'Courier New',monospace"]];
+var TIERS=[{n:"Mythic",f:0,s:25,c:"#c04bff"},{n:"Honor",f:25,s:25,c:"#ff6a5c"},{n:"Glory",f:50,s:50,c:"#ffb938"},{n:"Immortal",f:100,s:0,c:"#4fe0ff"}];
 
-  var defaults = { title:"ROAD TO IMMORTAL", wins:0, losses:0, start:0, winStar:1, loseStar:1, bonus:0 };
-  var state = load();
-  var ch = null;
-  try { ch = new BroadcastChannel("mlbb-road"); ch.onmessage = function(){ state = load(); render(); }; } catch(e){}
-  window.addEventListener("storage", function(e){ if(e.key === KEY){ state = load(); render(); } });
+function card(d){
+  var raw=d.start+d.wins*d.winStar-d.losses*d.loseStar+d.bonus,st=Math.max(0,Math.round(raw)),t=TIERS[0];
+  TIERS.forEach(function(x){if(st>=x.f)t=x});
+  var g=d.wins+d.losses,wr=g?Math.round(d.wins/g*1000)/10:0,tp=TPL[d.tpl]||TPL.gelap;
+  var tc=d.autoAccent?t.c:d.cAccent,segs="",lb="";
+  TIERS.slice(0,3).forEach(function(x){var f=Math.min(1,Math.max(0,(st-x.f)/x.s))*100;
+    segs+='<div class="seg" style="flex:'+x.s+';--c:'+(d.autoAccent?x.c:tc)+'"><i style="width:'+f+'%"></i></div>';lb+='<span style="flex:'+x.s+'">'+x.n+'</span>'});
+  var rem=Math.max(0,100-st);
+  var v="--bg:"+(d.cBg||tp.bg)+";--ct:"+(d.cText||tp.ct)+";--mu:"+tp.mu+";--pn:"+tp.pn+";--bd:"+tp.bd+";--seg:"+tp.seg+";--r:"+tp.r+";--font:"+d.font+";--tier:"+tc;
+  return '<div class="card" style="'+v+'"><div class="head"><div class="title">'+esc(d.title)+'</div><div>'+(rem?"Sisa "+rem+" ★ ke Immortal":"Immortal tercapai!")+'</div></div>'+
+  '<div class="rank"><div class="name">'+t.n+'</div><div class="stars">'+(t.s?(st-t.f)+"/"+t.s:"★ "+(st-100))+'</div></div>'+
+  '<div class="track">'+segs+'</div><div class="labels">'+lb+'</div><div class="stats"><div class="stat w"><b>'+d.wins+'</b><span>Win</span></div><div class="stat l"><b>'+d.losses+'</b><span>Lose</span></div><div class="stat r"><b>'+wr+'%</b><span>Winrate</span></div></div></div>'}
 
-  function load(){
-    try { var r = localStorage.getItem(KEY); if(r) return Object.assign({}, defaults, JSON.parse(r)); } catch(e){}
-    return Object.assign({}, defaults);
-  }
-  function save(){
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
-    try { if(ch) ch.postMessage("update"); } catch(e){}
-    publish();
-    render();
-  }
-  function publish(){
-    if (!RELAY || view !== "control") return;
-    try { fetch(RELAY, { method: "POST", body: JSON.stringify(state) }).catch(function(){}); } catch(e){}
-  }
-  function adopt(obj){
-    var next = Object.assign({}, defaults, obj);
-    if (JSON.stringify(next) !== JSON.stringify(state)) { state = next; render(); }
-  }
-  function startSync(){
-    if (!RELAY) return;
-    if (view === "overlay"){
-      try {
-        var es = new EventSource(RELAY + "/sse?since=latest");
-        es.onmessage = function(e){
-          try { var d = JSON.parse(e.data); if (d.event === "message") adopt(JSON.parse(d.message)); } catch(err){}
-        };
-      } catch(e){}
-    } else {
-      fetch(RELAY + "/json?poll=1&since=latest").then(function(r){ return r.text(); }).then(function(t){
-        var last = null;
-        t.trim().split("\n").forEach(function(l){ try { var d = JSON.parse(l); if (d.event === "message") last = d.message; } catch(e){} });
-        if (last) { try { adopt(JSON.parse(last)); } catch(e){} } else { publish(); }
-      }).catch(function(){});
-    }
-  }
+/* ===== OVERLAY (tanpa login, baca lewat key) ===== */
+if(K){
+  var cur=D;function draw(){$.innerHTML=card(cur)}draw();
+  function pull(){api("/rest/v1/rpc/get_overlay",{method:"POST",body:JSON.stringify({k:K})}).then(function(r){return r.json()}).then(function(d){
+    if(d&&d.wins!==undefined){var n=Object.assign({},D,d);if(JSON.stringify(n)!==JSON.stringify(cur)){cur=n;draw()}}}).catch(function(){})}
+  pull();setInterval(pull,3000);return;
+}
 
-  // 4 tingkat: Mythic 25, Honor 25, Glory 50, Immortal (100 bintang total)
-  var TIERS = [
-    { name:"Mythic",   from:0,   size:25, c:"var(--mythic)" },
-    { name:"Honor",    from:25,  size:25, c:"var(--honor)" },
-    { name:"Glory",    from:50,  size:50, c:"var(--glory)" },
-    { name:"Immortal", from:100, size:0,  c:"var(--immortal)" }
-  ];
-  var TOTAL = 100;
+/* ===== DASHBOARD ===== */
+document.body.classList.add("dash");
+var S=null,okey=null,timer=null;
+try{S=JSON.parse(localStorage.getItem("mlbb-sess")||"null")}catch(e){}
+function saveSess(){try{localStorage.setItem("mlbb-sess",JSON.stringify(S))}catch(e){}}
+function setSess(j){S={at:j.access_token,rt:j.refresh_token,uid:j.user.id,email:j.user.email,exp:Date.now()/1000+(j.expires_in||3600)};saveSess()}
+function token(){
+  if(S.exp-60>Date.now()/1000)return Promise.resolve(S.at);
+  return api("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:S.rt})}).then(function(r){return r.json()}).then(function(j){
+    if(!j.access_token)throw 0;setSess(j);return S.at})}
+function errMsg(j){var m=(j&&(j.error_description||j.msg||j.message))||"Terjadi kesalahan";
+  if(/Invalid login/i.test(m))return"Email atau password salah";if(/already/i.test(m))return"Email sudah terdaftar, silakan masuk";if(/at least 6|weak/i.test(m))return"Password minimal 6 karakter";return m}
 
-  function calc(){
-    var raw = state.start + state.wins*state.winStar - state.losses*state.loseStar + state.bonus;
-    var stars = Math.max(0, Math.round(raw));
-    var t = TIERS[0];
-    for (var i = 0; i < TIERS.length; i++) if (stars >= TIERS[i].from) t = TIERS[i];
-    var games = state.wins + state.losses;
-    return {
-      stars: stars, tier: t,
-      inTier: t.size ? (stars - t.from) + "/" + t.size : "★ " + (stars - 100),
-      remain: Math.max(0, TOTAL - stars),
-      wr: games ? Math.round(state.wins / games * 1000) / 10 : 0
-    };
-  }
+function authView(msg){
+  $.innerHTML='<div class="wrap"><div class="p"><h2>Masuk atau daftar</h2><div class="g" style="grid-template-columns:1fr">'+
+  '<label>Email<input id="em" type="email" autocomplete="email"></label><label>Password (minimal 6 karakter)<input id="pw" type="password" autocomplete="current-password"></label></div>'+
+  '<div class="row"><button id="bin">Masuk</button><button id="bup" class="bs">Daftar</button></div><p class="hint err" id="msg">'+esc(msg||"")+'</p>'+
+  '<p class="hint">Setiap email punya overlay dan datanya sendiri.</p></div></div>';
+  function go(path,body,isUp){var em=document.getElementById("em").value.trim(),pw=document.getElementById("pw").value,m=document.getElementById("msg");
+    if(!em||!pw){m.textContent="Isi email dan password";return}m.textContent="Memproses…";
+    api(path,{method:"POST",body:JSON.stringify({email:em,password:pw})}).then(function(r){return r.json()}).then(function(j){
+      if(j.access_token){setSess(j);start()}else if(isUp&&j.id){m.textContent="Daftar berhasil. Cek email untuk konfirmasi, lalu masuk."}else m.textContent=errMsg(j)}).catch(function(){m.textContent="Gagal terhubung ke server"})}
+  document.getElementById("bin").onclick=function(){go("/auth/v1/token?grant_type=password")};
+  document.getElementById("bup").onclick=function(){go("/auth/v1/signup",0,true)};
+}
 
-  function overlayHTML(){
-    var c = calc(), segs = "", lbls = "";
-    TIERS.slice(0,3).forEach(function(t){
-      var fill = Math.min(1, Math.max(0, (c.stars - t.from) / t.size)) * 100;
-      segs += '<div class="seg" style="flex:' + t.size + ';--c:' + t.c + '"><i style="width:' + fill + '%"></i></div>';
-      lbls += '<span style="flex:' + t.size + '">' + t.name + '</span>';
-    });
-    var remainTxt = c.remain > 0 ? "Sisa " + c.remain + " ★ ke Immortal" : "Immortal tercapai!";
-    return '<div class="card" style="--tier:' + c.tier.c + '">' +
-      '<div class="head"><div class="title">' + esc(state.title) + '</div><div class="remain">' + remainTxt + '</div></div>' +
-      '<div class="rank"><div class="name">' + c.tier.name + '</div><div class="stars">' + c.inTier + '</div></div>' +
-      '<div class="track">' + segs + '</div><div class="labels">' + lbls + '</div>' +
-      '<div class="stats">' +
-        '<div class="stat w"><b>' + state.wins + '</b><span>Win</span></div>' +
-        '<div class="stat l"><b>' + state.losses + '</b><span>Lose</span></div>' +
-        '<div class="stat r"><b>' + c.wr + '%</b><span>Winrate</span></div>' +
-      '</div></div>';
-  }
+function start(){
+  $.innerHTML='<div class="wrap"><div class="p">Memuat…</div></div>';
+  token().then(function(t){return api("/rest/v1/overlays?select=key,data",{},t).then(function(r){return r.json()}).then(function(rows){
+    if(rows&&rows.length){okey=rows[0].key;D=Object.assign({},D,rows[0].data);return}
+    return api("/rest/v1/overlays",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({data:D})},t).then(function(r){return r.json()}).then(function(r){okey=r[0].key})})})
+  .then(dash).catch(function(){S=null;saveSess();authView("Sesi berakhir, silakan masuk lagi")})}
 
-  function controlHTML(){
-    return '<div class="wrap">' +
-      '<div class="panel"><h2>Tambah / kurangi</h2><div class="btns">' +
-        '<button class="bw" data-a="w+">+ Win (W)</button><button class="bl" data-a="l+">+ Lose (L)</button>' +
-        '<button class="bs" data-a="w-">− Win</button><button class="bs" data-a="l-">− Lose</button>' +
-        '<button class="bs" data-a="b+">+ 1 ★ bonus</button><button class="bs" data-a="b-">− 1 ★ bonus</button>' +
-      '</div><p class="hint">Bonus ★ dipakai untuk bintang ekstra (misal win streak) atau koreksi cepat. Pintasan keyboard: W = +Win, L = +Lose.</p></div>' +
-      '<div class="panel"><h2>Edit manual</h2><div class="fields">' +
-        field("wins","Win") + field("losses","Lose") +
-        field("start","Bintang awal (dari Mythic 0)") + field("bonus","Bonus ★") +
-        field("winStar","★ per Win") + field("loseStar","★ per Lose") +
-      '</div><label class="row">Judul overlay<input type="text" id="f-title" value="' + esc(state.title) + '"></label>' +
-      '<div class="row"><button class="bd" data-a="reset">Reset semua</button></div></div>' +
-      '<div class="panel"><h2>Pratinjau</h2>' + (RELAY ? '<p class="hint">Sinkron online aktif (room: ' + esc(room) + ').</p>' : '<p class="hint">Sinkron mati. Tambahkan &amp;room=KODE-KAMU di link panel dan ?room=KODE-KAMU di link overlay.</p>') + overlayHTML() + '</div></div>';
-  }
-  function field(k, label){
-    return '<label>' + label + '<input type="number" step="1" id="f-' + k + '" value="' + state[k] + '"></label>';
-  }
-  function esc(s){ return String(s).replace(/[&<>"]/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]; }); }
+function queueSave(){clearTimeout(timer);status("Menyimpan…");timer=setTimeout(function(){
+  token().then(function(t){return api("/rest/v1/overlays?owner=eq."+S.uid,{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({data:D,updated_at:new Date().toISOString()})},t)})
+  .then(function(r){status(r.ok?"Tersimpan":"Gagal menyimpan")}).catch(function(){status("Gagal menyimpan")})},500)}
+function status(s){var e=document.getElementById("st");if(e)e.textContent=s}
 
-  var app = document.getElementById("app");
-  function render(){
-    var focusId = document.activeElement && document.activeElement.id;
-    app.innerHTML = view === "control" ? controlHTML() : overlayHTML();
-    if (view === "control" && focusId){ var el = document.getElementById(focusId); if(el && el.type !== "text") el.focus(); }
-  }
-
-  if (view === "control"){
-    app.addEventListener("click", function(e){
-      var a = e.target.getAttribute && e.target.getAttribute("data-a"); if(!a) return;
-      if (a === "w+") state.wins++;
-      if (a === "w-") state.wins = Math.max(0, state.wins - 1);
-      if (a === "l+") state.losses++;
-      if (a === "l-") state.losses = Math.max(0, state.losses - 1);
-      if (a === "b+") state.bonus++;
-      if (a === "b-") state.bonus--;
-      if (a === "reset" && confirm("Reset win, lose, dan bintang ke 0?")) state = Object.assign({}, defaults, { title: state.title });
-      save();
-    });
-    app.addEventListener("change", function(e){
-      var id = e.target.id || ""; if (id.indexOf("f-") !== 0) return;
-      var k = id.slice(2);
-      if (k === "title") state.title = e.target.value;
-      else {
-        var n = parseInt(e.target.value, 10); if (isNaN(n)) n = defaults[k];
-        if (k === "wins" || k === "losses" || k === "start" ) n = Math.max(0, n);
-        state[k] = n;
-      }
-      save();
-    });
-    window.addEventListener("keydown", function(e){
-      var t = e.target.tagName; if (t === "INPUT") return;
-      if (e.key === "w" || e.key === "W"){ state.wins++; save(); }
-      if (e.key === "l" || e.key === "L"){ state.losses++; save(); }
-    });
-  }
-  render();
-  startSync();
+function dash(){
+  var link=location.origin+location.pathname+"?k="+okey;
+  var num=function(f,l){return'<label>'+l+'<input type="number" step="1" data-f="'+f+'"></label>'};
+  $.innerHTML='<div class="wrap"><div class="top"><div><b>Road to Immortal</b><br><small>'+esc(S.email)+' · <span id="st">Tersimpan</span></small></div><button class="bs" id="out">Keluar</button></div>'+
+  '<div class="p"><h2>Link overlay untuk OBS / TikTok Studio</h2><input class="url" id="lnk" readonly value="'+esc(link)+'"><div class="row"><button id="cp">Salin link</button></div>'+
+  '<p class="hint">Tempel link ini sebagai Browser Source (OBS) atau Add link (TikTok Studio), ukuran sekitar 500 × 330. Key kamu: <b>'+esc(okey)+'</b></p></div>'+
+  '<div class="p"><h2>Pratinjau</h2><div id="pv"></div></div>'+
+  '<div class="p"><h2>Tambah / kurangi</h2><div class="b3"><button class="bw" data-a="w+">+ Win</button><button class="bl" data-a="l+">+ Lose</button><button class="bs" data-a="w-">− Win</button><button class="bs" data-a="l-">− Lose</button><button class="bs" data-a="b+">+1 ★ bonus</button><button class="bs" data-a="b-">−1 ★ bonus</button></div></div>'+
+  '<div class="p"><h2>Edit angka</h2><div class="g">'+num("wins","Win")+num("losses","Lose")+num("start","Bintang awal")+num("bonus","Bonus ★")+num("winStar","★ per Win")+num("loseStar","★ per Lose")+'</div>'+
+  '<div class="row"><button class="bd" id="rs">Reset angka</button></div></div>'+
+  '<div class="p"><h2>Tema tampilan</h2><div class="g"><label>Judul<input type="text" data-f="title" maxlength="40"></label>'+
+  '<label>Template<select data-f="tpl"><option value="gelap">Gelap</option><option value="terang">Terang</option><option value="kaca">Kaca</option><option value="polos">Polos (tanpa kotak)</option></select></label>'+
+  '<label>Font<select data-f="font">'+FONTS.map(function(f){return'<option value="'+esc(f[1])+'">'+f[0]+'</option>'}).join("")+'</select></label>'+
+  '<label>Warna latar kartu<input type="color" data-f="cBg"></label><label>Warna teks<input type="color" data-f="cText"></label>'+
+  '<label>Warna aksen<input type="color" data-f="cAccent"></label></div>'+
+  '<label class="c" style="margin-top:10px"><input type="checkbox" data-f="autoAccent"> Warna aksen otomatis mengikuti rank</label>'+
+  '<div class="row"><button class="bs" id="rc">Kembalikan warna template</button></div></div></div>';
+  var pv=document.getElementById("pv");
+  function sync(){pv.innerHTML=card(D);$.querySelectorAll("[data-f]").forEach(function(e){var f=e.getAttribute("data-f"),v=D[f];
+    if(e.type==="checkbox")e.checked=!!v;else if(e.type==="color"){var tp=TPL[D.tpl];e.value=v||(f==="cBg"?(tp.bg.charAt(0)==="#"?tp.bg:"#1d1a3d"):f==="cText"?tp.ct:"#c04bff")}else if(document.activeElement!==e)e.value=v})}
+  sync();
+  $.addEventListener("click",function(e){var a=e.target.getAttribute&&e.target.getAttribute("data-a");if(!a)return;
+    if(a==="w+")D.wins++;if(a==="w-")D.wins=Math.max(0,D.wins-1);if(a==="l+")D.losses++;if(a==="l-")D.losses=Math.max(0,D.losses-1);if(a==="b+")D.bonus++;if(a==="b-")D.bonus--;sync();queueSave()});
+  $.addEventListener("input",function(e){var f=e.target.getAttribute&&e.target.getAttribute("data-f");if(!f)return;var el=e.target;
+    if(el.type==="checkbox")D[f]=el.checked;else if(el.type==="number"){var n=parseInt(el.value,10);if(isNaN(n))return;D[f]=(f==="wins"||f==="losses"||f==="start")?Math.max(0,n):n}else D[f]=el.value;
+    if(f==="tpl"){D.cBg="";D.cText=""}sync();queueSave()});
+  document.getElementById("rc").onclick=function(){D.cBg="";D.cText="";D.autoAccent=true;sync();queueSave()};
+  document.getElementById("rs").onclick=function(){if(confirm("Reset win, lose, bintang awal dan bonus ke 0?")){D.wins=D.losses=D.start=D.bonus=0;sync();queueSave()}};
+  document.getElementById("cp").onclick=function(){var i=document.getElementById("lnk");i.select();try{navigator.clipboard.writeText(i.value)}catch(x){document.execCommand("copy")}status("Link disalin")};
+  document.getElementById("out").onclick=function(){S=null;saveSess();authView()};
+}
+if(S&&S.rt)start();else authView();
 })();
-</script>
-</body>
-</html>
+</script></body></html>

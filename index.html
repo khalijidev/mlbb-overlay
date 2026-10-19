@@ -88,7 +88,7 @@ function vipHtml(d){
   var all=vipSorted(d);if(!all.length)return"";
   var l=all.slice(0,VIP_MAX),more=all.length>VIP_MAX?"+"+(all.length-VIP_MAX)+" lagi":"";
   return '<div class="vip"><div class="vh"><span>★ ANTRIAN MABAR VIP</span><span>'+more+'</span></div>'+
-    l.map(function(x,k){return'<div class="vr"><span class="no">'+(k+1)+'</span><span class="nm">'+esc(x.e.n)+(x.e.u?'<small>@'+esc(x.e.u)+'</small>':'')+'</span><span class="mc">'+x.e.m+' match</span></div>'}).join("")+'</div>'}
+    l.map(function(x,k){return'<div class="vr"><span class="no">'+(k+1)+'</span><span class="nm">'+esc(x.e.n)+(x.e.u?'<small>ID '+esc(x.e.u)+'</small>':'')+'</span><span class="mc">'+x.e.m+' match</span></div>'}).join("")+'</div>'}
 
 function card(d){
   var st=starsOf(d),t=TIERS[0];TIERS.forEach(function(x){if(st>=x.f)t=x});
@@ -116,7 +116,7 @@ if(K){
   document.body.classList.add("ov");
   var cur=D;
   function fit(){var c=$.firstChild;if(!c||!c.style)return;c.style.transform="none";c.style.margin="0";var w=+c.getAttribute("data-w")||460;c.style.width=w+"px";c.style.maxWidth="none";
-    var h=c.offsetHeight,vw=window.innerWidth,vh=window.innerHeight;if(!vw||!vh||!h)return;
+    var vp=c.querySelector(".vip"),h=c.offsetHeight-(vp?vp.offsetHeight+12:0),vw=window.innerWidth,vh=window.innerHeight;if(!vw||!vh||!h)return;
     var sc=Math.min(vw/w,vh/h);c.style.transformOrigin="0 0";c.style.transform="scale("+sc+")";
     c.style.marginLeft=Math.max(0,(vw-w*sc)/2)+"px";c.style.marginTop=Math.max(0,(vh-h*sc)/2)+"px"}
   function draw(){$.innerHTML=card(cur);fit();var im=$.querySelector("img");if(im)im.onload=fit;setTimeout(fit,80)}
@@ -177,9 +177,9 @@ function dash(){
   '<div class="p"><h2>Pratinjau</h2><div id="pv"></div></div>'+
   '<div class="p"><h2>Hitung hasil match</h2><div class="b3"><button class="bw" data-a="w+">+ Win</button><button class="bl" data-a="l+">+ Lose</button><button class="bs" data-a="w-">− Win (batalkan)</button><button class="bs" data-a="l-">− Lose (batalkan)</button></div>'+
   '<p class="hint">Win menambah 1 bintang, Lose mengurangi 1 bintang. Rank berpindah otomatis.</p></div>'+
-  '<div class="p"><h2>Mabar VIP (donasi)</h2><div class="g3"><label>Nama<input id="vn" type="text" maxlength="30" placeholder="Nama donatur"></label><label>Username<input id="vu" type="text" maxlength="30" placeholder="@username"></label><label>Match<input id="vm" type="number" min="1" max="999" step="1" value="1"></label></div>'+
+  '<div class="p"><h2>Mabar VIP (donasi)</h2><div class="g3"><label>Nama<input id="vn" type="text" maxlength="30" placeholder="Nama donatur"></label><label>ID Mobile Legends<input id="vu" type="text" inputmode="numeric" maxlength="24" placeholder="12345678 (1234)"></label><label>Match<input id="vm" type="number" min="1" max="999" step="1" value="1"></label></div>'+
   '<div class="row"><button id="vadd">Tambah ke antrian VIP</button></div>'+
-  '<p class="hint">Antrian diurutkan otomatis: jumlah match terbanyak ada di paling atas. Overlay hanya menampilkan 5 teratas. Kalau username yang sama ditambahkan lagi, match-nya dijumlahkan. Tekan −1 setiap selesai 1 match, entri otomatis hilang saat match habis.</p>'+
+  '<p class="hint">Antrian diurutkan otomatis: jumlah match terbanyak ada di paling atas. Overlay hanya menampilkan 5 teratas. Kalau ID Mobile Legends yang sama ditambahkan lagi, match-nya dijumlahkan. Tekan −1 setiap selesai 1 match, entri otomatis hilang saat match habis.</p>'+
   '<div id="vl"></div>'+
   '<label class="c" style="margin-top:10px"><input type="checkbox" data-f="showVip"> Tampilkan antrian VIP di overlay</label></div>'+
   '<div class="p"><h2>Koreksi manual</h2><div class="g">'+num("stars","Bintang sekarang")+'<span></span>'+num("wins","Jumlah Win")+num("losses","Jumlah Lose")+'</div>'+
@@ -197,17 +197,17 @@ function dash(){
   function vipList(){
     var vl=document.getElementById("vl"),l=vipSorted(D);
     if(!l.length){vl.innerHTML='<p class="hint">Belum ada antrian VIP.</p>';return}
-    vl.innerHTML=l.map(function(x,k){return'<div class="vi"><div class="t"><b>#'+(k+1)+' '+esc(x.e.n)+'</b>'+(x.e.u?' <small>@'+esc(x.e.u)+'</small>':'')+'<br><small>'+x.e.m+' match · '+(k<VIP_MAX?'tampil di overlay':'menunggu')+'</small></div>'+
+    vl.innerHTML=l.map(function(x,k){return'<div class="vi"><div class="t"><b>#'+(k+1)+' '+esc(x.e.n)+'</b>'+(x.e.u?' <small>ID '+esc(x.e.u)+'</small>':'')+'<br><small>'+x.e.m+' match · '+(k<VIP_MAX?'tampil di overlay':'menunggu')+'</small></div>'+
       '<button class="bs" data-v="dec" data-i="'+x.i+'" aria-label="Kurangi 1 match">−1</button><button class="bw" data-v="inc" data-i="'+x.i+'" aria-label="Tambah 1 match">+1</button><button class="bd" data-v="del" data-i="'+x.i+'">Hapus</button></div>'}).join("")}
   function sync(){pv.innerHTML=card(D);pfit();setTimeout(pfit,80);vipList();$.querySelectorAll("[data-f]").forEach(function(e){var f=e.getAttribute("data-f"),v=D[f];
     if(f==="stars"){if(document.activeElement!==e)e.value=starsOf(D)}else if(e.type==="checkbox")e.checked=f==="showVip"?D.showVip!==false:!!v;else if(e.type==="color")e.value=v||"#c04bff";else if(document.activeElement!==e)e.value=v});var ac=document.getElementById("acw");if(ac)ac.style.display=D.autoAccent?"none":"flex"}
   sync();
   function addVip(){
     var vn=document.getElementById("vn"),vu=document.getElementById("vu"),vm=document.getElementById("vm");
-    var n=vn.value.trim(),u=vu.value.trim().replace(/^@+/,""),m=parseInt(vm.value,10);
+    var n=vn.value.trim(),u=vu.value.replace(/[^0-9() ]/g,"").replace(/\s+/g," ").trim(),m=parseInt(vm.value,10);
     if(!n||!(m>0)){status("Isi nama dan jumlah match (minimal 1)");return}
     m=Math.min(m,999);if(!Array.isArray(D.vip))D.vip=[];
-    var f=u?D.vip.filter(function(e){return(e.u||"").toLowerCase()===u.toLowerCase()})[0]:null;
+    var f=u?D.vip.filter(function(e){return(e.u||"").replace(/\s/g,"")===u.replace(/\s/g,"")})[0]:null;
     if(f){f.m=Math.min(999,f.m+m);f.n=n.slice(0,30)}else D.vip.push({n:n.slice(0,30),u:u.slice(0,30),m:m});
     vn.value="";vu.value="";vm.value="1";vn.focus();sync();queueSave()}
   document.getElementById("vadd").onclick=addVip;
